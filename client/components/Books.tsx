@@ -1,20 +1,94 @@
 "use client";
 
 import React, { useState } from 'react';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import Image from "next/image";
+import { 
+  Search, 
+  BookOpen, 
+  Grid3x3
+} from 'lucide-react';
 
-// Mock Data representing your spiritual collection
+// Mock Data with image paths (place these images in your public folder)
 const BOOKS_DATA = [
-  { id: 1, title: "The Path to Peace", author: "Dr. Samuel K. Brown", price: "50 Birr", status: "AVAILABLE", category: "Prayer", tag: "PRAYER", cover: "bg-stone-200" },
-  { id: 2, title: "Ancient Wisdom", author: "Elena G. White", price: "50 Birr", status: "AVAILABLE", category: "Faith", tag: "FAITH", cover: "bg-emerald-100" },
-  { id: 3, title: "The Pure Heart", author: "Pastor John Mark", price: "50 Birr", status: "RESERVED", category: "Holiness", tag: "HOLINESS", cover: "bg-rose-100" },
-  { id: 4, title: "Church History", author: "Abba Melketsedek", price: "70 Birr", status: "AVAILABLE", category: "History", tag: "HISTORY", cover: "bg-amber-100" },
+  { 
+    id: 1, 
+    title: "The Path to Peace", 
+    author: "Dr. Samuel K. Brown", 
+    price: "50 Birr", 
+    status: "AVAILABLE", 
+    category: "Prayer", 
+    tag: "PRAYER", 
+    cover: "from-primary/20 to-secondary/20",
+    image: "/books/path-to-peace.jpg" // Add your image path here
+  },
+  { 
+    id: 2, 
+    title: "Ancient Wisdom", 
+    author: "Elena G. White", 
+    price: "50 Birr", 
+    status: "AVAILABLE", 
+    category: "Faith", 
+    tag: "FAITH", 
+    cover: "from-secondary/20 to-primary/20",
+    image: "/books/ancient-wisdom.jpg"
+  },
+  { 
+    id: 3, 
+    title: "The Pure Heart", 
+    author: "Pastor John Mark", 
+    price: "50 Birr", 
+    status: "RESERVED", 
+    category: "Holiness", 
+    tag: "HOLINESS", 
+    cover: "from-primary/30 to-tertiary/10",
+    image: "/books/pure-heart.jpg"
+  },
+  { 
+    id: 4, 
+    title: "Church History", 
+    author: "Abba Melketsedek", 
+    price: "70 Birr", 
+    status: "AVAILABLE", 
+    category: "History", 
+    tag: "HISTORY", 
+    cover: "from-secondary/20 to-tertiary/20",
+    image: "/books/church-history.jpg"
+  },
+  { 
+    id: 5, 
+    title: "The Ladder of Divine Ascent", 
+    author: "St. John Climacus", 
+    price: "65 Birr", 
+    status: "AVAILABLE", 
+    category: "Prayer", 
+    tag: "PRAYER", 
+    cover: "from-primary/25 to-secondary/15",
+    image: "/books/ladder-divine-ascent.jpg"
+  },
+  { 
+    id: 6, 
+    title: "On the Incarnation", 
+    author: "St. Athanasius", 
+    price: "55 Birr", 
+    status: "RESERVED", 
+    category: "Faith", 
+    tag: "FAITH", 
+    cover: "from-secondary/25 to-primary/15",
+    image: "/books/on-incarnation.jpg"
+  },
 ];
 
-const CATEGORIES = ["All", "Prayer", "Faith", "Leadership", "History"];
+const CATEGORIES = ["All", "Prayer", "Faith", "Holiness", "History"];
 
 export default function BrowseBooks() {
   const [activeCategory, setActiveCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [imageErrors, setImageErrors] = useState<Record<number, boolean>>({});
 
   // Filtering Logic
   const filteredBooks = BOOKS_DATA.filter(book => {
@@ -24,122 +98,218 @@ export default function BrowseBooks() {
     return matchesCategory && matchesSearch;
   });
 
-  return (
-    <div className="min-h-screen bg-[#050510] text-white pb-32">
+  // Handle image error
+  const handleImageError = (bookId: number) => {
+    setImageErrors(prev => ({ ...prev, [bookId]: true }));
+  };
 
-      {/* --- HEADER --- */}
-      <header className="flex justify-between items-center px-6 py-4 bg-[#0a0a1a]/90 backdrop-blur-xl sticky top-0 z-50 border-b border-white/5">
-        <div className="flex items-center gap-2">
-          <div className="w-10 h-10 bg-[#FFD700] rounded-xl flex items-center justify-center text-black shadow-[0_0_15px_rgba(255,215,0,0.3)]">
-            <span className="text-xl font-bold">S</span>
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-spiritual-cream to-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        {/* Header with Title */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+          <div>
+            <h1 className="text-4xl md:text-5xl font-bold text-primary">
+              Browse <span className="text-secondary">Books</span>
+            </h1>
+            <p className="text-gray-600 mt-2">
+              Explore our collection of sacred texts and spiritual wisdom.
+            </p>
           </div>
-          <span className="font-bold text-lg tracking-tight">S-Library</span>
+          
+          {/* View Toggle */}
+          <div className="flex items-center gap-2 bg-white rounded-lg p-1 shadow-sm border">
+            <Button
+              variant={viewMode === "grid" ? "secondary" : "ghost"}
+              size="sm"
+              onClick={() => setViewMode("grid")}
+              className="gap-2"
+            >
+              <Grid3x3 className="h-4 w-4" />
+              Grid
+            </Button>
+            <Button
+              variant={viewMode === "list" ? "secondary" : "ghost"}
+              size="sm"
+              onClick={() => setViewMode("list")}
+              className="gap-2"
+            >
+              <BookOpen className="h-4 w-4" />
+              List
+            </Button>
+          </div>
         </div>
-        <div className="flex items-center gap-4">
-          <button className="p-2 text-gray-400 hover:text-white">🔍</button>
-          <div className="w-10 h-10 rounded-full border-2 border-[#FFD700]/50 p-0.5">
-            <div className="w-full h-full bg-gray-600 rounded-full overflow-hidden">
-               <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="user" />
+
+        {/* Search and Filter Section */}
+        <div className="bg-white rounded-2xl shadow-lg p-6 mb-8 border">
+          <div className="flex flex-col md:flex-row gap-4">
+            {/* Search Input */}
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+              <Input
+                placeholder="Search by title, author, or topic..."
+                className="pl-10 py-6 text-base"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+            
+            {/* Category Filters */}
+            <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
+              {CATEGORIES.map((cat) => (
+                <Button
+                  key={cat}
+                  variant={activeCategory === cat ? "secondary" : "outline"}
+                  onClick={() => setActiveCategory(cat)}
+                  className="whitespace-nowrap"
+                >
+                  {cat}
+                </Button>
+              ))}
             </div>
           </div>
         </div>
-      </header>
 
-      <div className="max-w-xl mx-auto px-6 mt-8">
-        <h1 className="text-4xl font-black tracking-tight">Browse Books</h1>
-        <p className="text-gray-400 mt-2 font-light">Explore our collection of sacred texts and spiritual wisdom.</p>
-
-        {/* --- SEARCH INPUT --- */}
-        <div className="relative mt-8 group">
-          <span className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-[#FFD700] transition-colors">🔍</span>
-          <input
-            type="text"
-            placeholder="Search by title, author, or topic..."
-            className="w-full bg-[#10101f] border border-gray-800 rounded-2xl py-5 pl-14 pr-6 outline-none focus:border-[#FFD700]/50 focus:ring-1 focus:ring-[#FFD700]/20 transition-all"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </div>
-
-        {/* --- CATEGORY FILTERS --- */}
-        <div className="flex gap-3 overflow-x-auto mt-8 pb-2 no-scrollbar">
-          {CATEGORIES.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setActiveCategory(cat)}
-              className={`px-6 py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all border ${
-                activeCategory === cat
-                ? "bg-[#FFD700] text-black border-[#FFD700] shadow-[0_5px_15px_rgba(255,215,0,0.2)]"
-                : "bg-[#10101f] text-gray-400 border-gray-800 hover:border-gray-600"
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-
-        {/* --- BOOKS LIST --- */}
-        <div className="mt-10 space-y-8">
+        {/* Books Grid/List View */}
+        <div className={
+          viewMode === "grid" 
+            ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" 
+            : "space-y-4"
+        }>
           {filteredBooks.length > 0 ? (
             filteredBooks.map((book) => (
-              <div key={book.id} className="bg-[#10101f] rounded-[40px] border border-white/5 p-5 shadow-2xl overflow-hidden group">
-                {/* Image Placeholder with Category Tag */}
-                <div className={`relative w-full aspect-[4/3] rounded-[30px] ${book.cover} mb-6 overflow-hidden flex items-center justify-center`}>
-                   <div className="absolute top-4 left-4">
-                      <span className="bg-[#FFD700] text-black text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest shadow-lg">
-                        {book.tag}
-                      </span>
-                   </div>
-                   <div className="text-gray-400/20 font-serif italic text-3xl font-bold select-none uppercase tracking-widest">
-                     Book Cover
-                   </div>
-                </div>
-
-                {/* Content */}
-                <div className="flex justify-between items-start mb-2">
-                  <h3 className="text-2xl font-bold tracking-tight">{book.title}</h3>
-                  <span className={`text-[10px] font-black px-2 py-0.5 rounded border ${
-                    book.status === 'AVAILABLE' ? 'text-green-500 border-green-500/20 bg-green-500/5' : 'text-gray-500 border-gray-800 bg-gray-800'
-                  }`}>
-                    {book.status}
-                  </span>
-                </div>
-                <p className="text-gray-500 font-medium mb-2 underline decoration-[#FFD700]/20 underline-offset-4 text-sm">by {book.author}</p>
-                <p className="text-2xl font-black text-[#FFD700] mb-6">{book.price}</p>
-
-                {/* Main Action */}
-                <button className="w-full bg-[#FFD700] hover:bg-[#ffc400] text-black font-extrabold py-4 rounded-2xl shadow-[0_10px_20px_rgba(0,0,0,0.2)] transition-all active:scale-95">
-                  View Details
-                </button>
-              </div>
+              viewMode === "grid" ? (
+                // Grid View Card with Image
+                <Card key={book.id} className="group hover:shadow-xl transition-all duration-300 overflow-hidden border-2 hover:border-secondary/20">
+                  <div className={`relative h-48 bg-gradient-to-br ${book.cover}`}>
+                    {!imageErrors[book.id] ? (
+                      <Image
+                        src={book.image}
+                        alt={book.title}
+                        fill
+                        className="object-cover group-hover:scale-110 transition-transform duration-500"
+                        onError={() => handleImageError(book.id)}
+                      />
+                    ) : (
+                      // Fallback if image fails to load
+                      <div className="absolute inset-0 flex items-center justify-center bg-primary/10">
+                        <BookOpen className="h-12 w-12 text-primary/40" />
+                      </div>
+                    )}
+                    
+                    {/* Badges */}
+                    <Badge 
+                      className={`absolute top-4 right-4 ${
+                        book.status === 'AVAILABLE' 
+                          ? 'bg-green-500 text-white' 
+                          : 'bg-gray-500 text-white'
+                      }`}
+                    >
+                      {book.status}
+                    </Badge>
+                    <Badge 
+                      variant="secondary"
+                      className="absolute top-4 left-4 bg-white/90 text-primary"
+                    >
+                      {book.tag}
+                    </Badge>
+                  </div>
+                  
+                  <CardContent className="p-6">
+                    <h3 className="text-xl font-bold text-primary mb-2">{book.title}</h3>
+                    <p className="text-gray-600 text-sm mb-3">by {book.author}</p>
+                    
+                    <div className="flex items-center justify-between mb-4">
+                      <span className="text-2xl font-bold text-secondary">{book.price}</span>
+                    </div>
+                    
+                    <Button className="w-full bg-primary text-tertiary hover:bg-secondary hover:text-primary transition-all duration-300">
+                      View Details
+                    </Button>
+                  </CardContent>
+                </Card>
+              ) : (
+                // List View Card with Image
+                <Card key={book.id} className="group hover:shadow-md transition-all duration-300">
+                  <CardContent className="p-6">
+                    <div className="flex items-start gap-6">
+                      {/* Image for list view */}
+                      <div className="relative w-20 h-20 rounded-xl overflow-hidden flex-shrink-0 bg-gradient-to-br ${book.cover}">
+                        {!imageErrors[book.id] ? (
+                          <Image
+                            src={book.image}
+                            alt={book.title}
+                            fill
+                            className="object-cover"
+                            onError={() => handleImageError(book.id)}
+                          />
+                        ) : (
+                          <div className="absolute inset-0 flex items-center justify-center bg-primary/10">
+                            <BookOpen className="h-8 w-8 text-primary/40" />
+                          </div>
+                        )}
+                      </div>
+                      
+                      <div className="flex-1">
+                        <div className="flex items-start justify-between mb-2">
+                          <div>
+                            <h3 className="text-xl font-bold text-primary">{book.title}</h3>
+                            <p className="text-gray-600">by {book.author}</p>
+                          </div>
+                          <Badge 
+                            className={
+                              book.status === 'AVAILABLE' 
+                                ? 'bg-green-500 text-white' 
+                                : 'bg-gray-500 text-white'
+                            }
+                          >
+                            {book.status}
+                          </Badge>
+                        </div>
+                        
+                        <div className="flex items-center gap-4 mt-4">
+                          <Badge variant="outline" className="border-secondary text-secondary">
+                            {book.tag}
+                          </Badge>
+                          <span className="text-2xl font-bold text-secondary">{book.price}</span>
+                          <Button className="ml-auto bg-primary text-tertiary hover:bg-secondary hover:text-primary">
+                            View
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              )
             ))
           ) : (
-            <div className="text-center py-20 bg-[#10101f] rounded-[40px] border border-dashed border-gray-800">
-              <p className="text-gray-500 italic">No sacred texts found matching your criteria.</p>
+            <div className="col-span-full text-center py-20">
+              <div className="bg-white rounded-2xl shadow-lg p-12">
+                <BookOpen className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+                <p className="text-gray-500 text-lg">No sacred texts found matching your criteria.</p>
+                <Button 
+                  variant="link" 
+                  onClick={() => {
+                    setSearchQuery("");
+                    setActiveCategory("All");
+                  }}
+                  className="text-secondary mt-4"
+                >
+                  Clear filters
+                </Button>
+              </div>
             </div>
           )}
         </div>
+
+        {/* Results Count */}
+        {filteredBooks.length > 0 && (
+          <div className="mt-8 text-center text-gray-500">
+            Showing {filteredBooks.length} of {BOOKS_DATA.length} books
+          </div>
+        )}
       </div>
-
-      {/* --- FIXED BOTTOM NAVIGATION --- */}
-      <nav className="fixed bottom-0 left-0 w-full bg-[#0a0a1a]/95 backdrop-blur-2xl border-t border-white/5 px-10 py-5 flex justify-between items-center z-50">
-        <NavItem icon="🏠" label="Home" active={false} />
-        <NavItem icon="📖" label="Library" active={true} />
-        <NavItem icon="💳" label="Wallet" active={false} />
-        <NavItem icon="👤" label="Profile" active={false} />
-      </nav>
-    </div>
-  );
-}
-
-// Sub-component for clean Nav
-function NavItem({ icon, label, active }: { icon: string, label: string, active: boolean }) {
-  return (
-    <div className={`flex flex-col items-center gap-1 cursor-pointer transition-colors ${active ? 'text-[#FFD700]' : 'text-gray-500 hover:text-white'}`}>
-      <span className="text-2xl">{icon}</span>
-      <span className={`text-[10px] font-black uppercase tracking-[0.15em] ${active ? 'border-b-2 border-[#FFD700]' : ''}`}>
-        {label}
-      </span>
     </div>
   );
 }

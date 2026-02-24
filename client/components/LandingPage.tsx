@@ -30,10 +30,7 @@ export default function Home() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center w-full">
           {/* Left Content */}
           <div className="space-y-6">
-            <div className="inline-flex items-center px-3 py-1 rounded-full bg-secondary/20 text-secondary border border-secondary/30">
-              <Sparkles className="h-4 w-4 mr-2" />
-              <span className="text-sm font-medium">Sacred Wisdom Awaits</span>
-            </div>
+            
 
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-primary leading-tight">
               Discover Ancient
@@ -52,20 +49,7 @@ export default function Home() {
             </div>
 
             {/* Quick Stats */}
-            <div className="flex gap-8 pt-8">
-              <div>
-                <div className="text-2xl font-bold text-primary">2,500+</div>
-                <div className="text-sm text-gray-500">Sacred Texts</div>
-              </div>
-              <div>
-                <div className="text-2xl font-bold text-primary">50+</div>
-                <div className="text-sm text-gray-500">Languages</div>
-              </div>
-              <div>
-                <div className="text-2xl font-bold text-primary">10k+</div>
-                <div className="text-sm text-gray-500">Readers</div>
-              </div>
-            </div>
+            
           </div>
 
           {/* Right Side Image Placeholder */}
@@ -81,7 +65,7 @@ export default function Home() {
             </div>
             
             <Image
-              src="/image.png"
+              src=""
               alt="Ancient figure with glowing book"
               fill
               className="object-cover"
