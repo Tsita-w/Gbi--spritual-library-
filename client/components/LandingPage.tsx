@@ -1,103 +1,256 @@
-import React from 'react';
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { BookOpen, Sparkles, Home as HomeIcon, Library, LogIn, UserPlus, Search, Star, Users } from 'lucide-react'
+import Image from "next/image"
+import Link from "next/link"
 
-export default function LandingPage() {
+export default function Home() {
   return (
-    <div className="min-h-screen bg-spiritual-cream text-gray-900 font-sans">
+    <div className="flex flex-col min-h-screen bg-gradient-to-b from-spiritual-cream to-white">
+      {/* Navigation */}
+      <nav className="flex items-center justify-between px-6 py-4 sm:px-8 lg:px-12 bg-white/80 backdrop-blur-sm sticky top-0 z-50 shadow-sm">
+        <Link href="/" className="flex items-center space-x-2">
+          <BookOpen className="h-8 w-8 text-primary" />
+          <span className="text-xl font-bold text-primary">OrthodoxLibrary</span>
+        </Link>
 
-      {/* --- NAVIGATION --- */}
-      <nav className="flex justify-between items-center px-10 py-6 bg-white/80 backdrop-blur-md sticky top-0 z-50">
-        <div className="text-2xl font-bold text-agt-blue">Gibi Gubae <span className="text-agt-yellow">Library</span></div>
-        <div className="space-x-8 font-medium">
-          <a href="#" className="hover:text-agt-yellow transition">Home</a>
-          <a href="#" className="hover:text-agt-yellow transition">Books</a>
-          <a href="#" className="hover:text-agt-yellow transition">Research</a>
-          <button className="bg-church-red text-white px-6 py-2 rounded-full hover:bg-red-800 transition">
-            Join Gibi
-          </button>
+        <div className="hidden md:flex items-center space-x-8">
+          <NavLink href="/" icon={<HomeIcon className="h-4 w-4" />} text="Home" />
+          <NavLink href="/books" icon={<Library className="h-4 w-4" />} text="Books" />
+          <NavLink href="/login" icon={<LogIn className="h-4 w-4" />} text="Login" />
+          <NavLink href="/signup" icon={<UserPlus className="h-4 w-4" />} text="Sign Up" />
         </div>
+
+        <Button className="md:hidden bg-primary text-tertiary">Menu</Button>
       </nav>
 
-      {/* --- HERO SECTION (Poster Colors) --- */}
-      <header className="relative bg-agt-blue py-24 px-10 overflow-hidden">
-        {/* Decorative background circle like the poster */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500 rounded-full blur-3xl opacity-20 -mr-20 -mt-20"></div>
-
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-12 relative z-10">
-          <div className="flex-1 text-white">
-            <span className="text-agt-yellow font-semibold tracking-widest uppercase text-sm">Innovation • Faith • Technology</span>
-            <h1 className="text-6xl font-extrabold mt-4 leading-tight">
-              Explore the <br />
-              <span className="text-agt-yellow italic">Wisdom of Ages</span>
-            </h1>
-            <p className="mt-6 text-blue-100 text-lg max-w-lg">
-              Discover ancient Ge'ez scriptures, illuminated manuscripts, and modern spiritual teachings.
-              Our talent for our Church, preserving heritage digitally.
-            </p>
-            <div className="mt-10 flex gap-4">
-              <button className="bg-agt-yellow text-agt-blue font-bold px-8 py-4 rounded-xl shadow-lg hover:scale-105 transition">
-                Get Started
-              </button>
-              <button className="border-2 border-white text-white px-8 py-4 rounded-xl hover:bg-white hover:text-agt-blue transition">
-                Explore Library
-              </button>
+      {/* Hero Section with Image on Right */}
+      <section className="flex-1 flex items-center px-6 py-12 sm:px-8 lg:px-12 max-w-7xl mx-auto w-full relative">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center w-full">
+          {/* Left Content */}
+          <div className="space-y-6">
+            <div className="inline-flex items-center px-3 py-1 rounded-full bg-secondary/20 text-secondary border border-secondary/30">
+              <Sparkles className="h-4 w-4 mr-2" />
+              <span className="text-sm font-medium">Sacred Wisdom Awaits</span>
             </div>
-          </div>
 
-          <div className="flex-1 flex justify-center">
-            {/* The Book Image Container */}
-            <div className="relative group">
-              <div className="absolute -inset-1 bg-agt-yellow rounded-2xl blur opacity-25 group-hover:opacity-50 transition"></div>
-              <div className="relative bg-white p-4 rounded-2xl shadow-2xl">
-                <img
-                  src="/api/placeholder/400/500"
-                  alt="Ancient Manuscript"
-                  className="rounded-lg border-4 border-agt-yellow/20"
-                />
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-primary leading-tight">
+              Discover Ancient
+              <span className="block text-secondary">Orthodox Wisdom</span>
+            </h1>
+
+            <p className="text-lg text-gray-600 max-w-md">
+              Explore our digital library of sacred texts, theological works, and spiritual classics that nurture the soul.
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-4 pt-4">
+              <Button size="lg" className="bg-primary text-tertiary hover:bg-primary/90 shadow-lg hover:shadow-xl transition-all">
+                <BookOpen className="mr-2 h-5 w-5" />
+                Get Started
+              </Button>
+            </div>
+
+            {/* Quick Stats */}
+            <div className="flex gap-8 pt-8">
+              <div>
+                <div className="text-2xl font-bold text-primary">2,500+</div>
+                <div className="text-sm text-gray-500">Sacred Texts</div>
+              </div>
+              <div>
+                <div className="text-2xl font-bold text-primary">50+</div>
+                <div className="text-sm text-gray-500">Languages</div>
+              </div>
+              <div>
+                <div className="text-2xl font-bold text-primary">10k+</div>
+                <div className="text-sm text-gray-500">Readers</div>
               </div>
             </div>
           </div>
-        </div>
-      </header>
 
-      {/* --- QUOTE SECTION --- */}
-      <section className="py-20 bg-white">
-        <div className="max-w-4xl mx-auto text-center px-6">
-          <div className="text-agt-blue text-4xl mb-6">"</div>
-          <h2 className="text-2xl md:text-3xl font-serif text-agt-blue leading-relaxed italic">
-            "በመጀመሪያ ቃል ነበረ፤ ቃልም በእግዚአብሔር ዘንድ ነበረ፤ ቃልም እግዚአብሔር ነበረ።"
+          {/* Right Side Image Placeholder */}
+          <div className="relative h-[400px] lg:h-[500px] w-full rounded-2xl overflow-hidden shadow-2xl">
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20" />
+            {/* Replace this with your actual image */}
+            <div className="absolute inset-0 flex items-center justify-center bg-primary/5">
+              <div className="text-center p-8">
+                <BookOpen className="h-24 w-24 text-primary/30 mx-auto mb-4" />
+                <p className="text-primary/50 font-medium">✨ Ancient figure with glowing book ✨</p>
+                <p className="text-sm text-gray-400 mt-2">(Replace with your image)</p>
+              </div>
+            </div>
+            
+            <Image
+              src="/image.png"
+              alt="Ancient figure with glowing book"
+              fill
+              className="object-cover"
+              priority
+            />
+            
+          </div>
+        </div>
+
+        
+      </section>
+
+      {/* Features Section */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-spiritual-cream">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-3xl font-bold text-center text-primary mb-12">
+            Why Choose Our Orthodox Library?
           </h2>
-          <p className="mt-4 text-gray-500">— ዮሐንስ 1:1</p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <FeatureCard
+              icon={<BookOpen className="h-8 w-8 text-secondary" />}
+              title="Extensive Collection"
+              description="Thousands of Orthodox texts, from ancient manuscripts to modern commentaries"
+            />
+            <FeatureCard
+              icon={<Search className="h-8 w-8 text-secondary" />}
+              title="Smart Search"
+              description="Advanced search by author, topic, or liturgical season"
+            />
+            <FeatureCard
+              icon={<Star className="h-8 w-8 text-secondary" />}
+              title="Curated Content"
+              description="Hand-picked selections by Orthodox theologians and scholars"
+            />
+            <FeatureCard
+              icon={<Users className="h-8 w-8 text-secondary" />}
+              title="Community Notes"
+              description="Share insights and discuss texts with fellow readers"
+            />
+          </div>
         </div>
       </section>
 
-      {/* --- CATEGORIES (Second Image Structure) --- */}
-      <section className="py-24 px-10 bg-spiritual-cream">
+      {/* Featured Books Section with Cards */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          <div className="flex justify-between items-end mb-12">
-            <div>
-              <h3 className="text-agt-blue font-bold text-3xl">Featured Categories</h3>
-              <div className="h-1 w-20 bg-agt-yellow mt-2"></div>
-            </div>
-            <p className="text-gray-500 max-w-md">Browse through our meticulously curated collection of spiritual knowledge spanning centuries.</p>
-          </div>
+          <h2 className="text-3xl font-bold text-center text-primary mb-12">
+            Featured Orthodox Classics
+          </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            {['Ancient Series', 'Ge\'ez Manuscripts', 'Hymns (Dugua)', 'Modern Teachings'].map((cat, i) => (
-              <div key={i} className="bg-white p-8 rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all border border-gray-100">
-                <div className="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center text-agt-blue mb-6">
-                  📖
-                </div>
-                <h4 className="font-bold text-xl mb-3 text-agt-blue">{cat}</h4>
-                <p className="text-gray-500 text-sm mb-6">Authentic sources of spiritual nourishment and historical truth.</p>
-                <a href="#" className="text-church-red font-semibold flex items-center gap-2 group">
-                  Explore <span className="group-hover:translate-x-1 transition-transform">→</span>
-                </a>
-              </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[1, 2, 3].map((item) => (
+              <Card key={item} className="hover:shadow-lg transition-shadow">
+                <CardHeader>
+                  <div className="w-full h-48 bg-primary/10 rounded-t-lg mb-4 flex items-center justify-center">
+                    <BookOpen className="h-16 w-16 text-primary/40" />
+                  </div>
+                  <CardTitle className="text-primary">The Philokalia</CardTitle>
+                  <CardDescription>by St. Nikodimos of the Holy Mountain</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground mb-4">
+                    A classic collection of texts on prayer and the spiritual life...
+                  </p>
+                  <Button variant="outline" className="w-full border-primary text-primary hover:bg-primary/10">
+                    Read Sample
+                  </Button>
+                </CardContent>
+              </Card>
             ))}
           </div>
         </div>
       </section>
 
+      {/* Newsletter Section */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-primary text-tertiary">
+        <div className="max-w-3xl mx-auto text-center">
+          <h2 className="text-3xl font-bold mb-4">Stay Updated</h2>
+          <p className="text-lg mb-8 text-tertiary/90">
+            Receive weekly readings and new additions to our library
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+            <Input
+              type="email"
+              placeholder="Enter your email"
+              className="bg-tertiary/10 border-tertiary/30 text-tertiary placeholder:text-tertiary/60"
+            />
+            <Button className="bg-secondary text-primary hover:bg-secondary/90 whitespace-nowrap">
+              Subscribe
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-primary/95 text-tertiary py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div>
+            <h3 className="text-xl font-bold mb-4 flex items-center">
+              <BookOpen className="mr-2 h-5 w-5 text-secondary" />
+              Orthodox Library
+            </h3>
+            <p className="text-tertiary/80 text-sm">
+              Preserving and sharing the wisdom of the Orthodox Christian tradition through accessible digital means.
+            </p>
+          </div>
+
+          <div>
+            <h4 className="font-semibold mb-4">Quick Links</h4>
+            <ul className="space-y-2 text-tertiary/80 text-sm">
+              <li><Link href="/about" className="hover:text-secondary transition-colors">About Us</Link></li>
+              <li><Link href="/collection" className="hover:text-secondary transition-colors">Collection</Link></li>
+              <li><Link href="/blog" className="hover:text-secondary transition-colors">Blog</Link></li>
+              <li><Link href="/support" className="hover:text-secondary transition-colors">Support Us</Link></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="font-semibold mb-4">Resources</h4>
+            <ul className="space-y-2 text-tertiary/80 text-sm">
+              <li><Link href="/faq" className="hover:text-secondary transition-colors">FAQ</Link></li>
+              <li><Link href="/privacy" className="hover:text-secondary transition-colors">Privacy Policy</Link></li>
+              <li><Link href="/terms" className="hover:text-secondary transition-colors">Terms of Use</Link></li>
+              <li><Link href="/contact" className="hover:text-secondary transition-colors">Contact</Link></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="font-semibold mb-4">Connect</h4>
+            <ul className="space-y-2 text-tertiary/80 text-sm">
+              <li>Email: info@orthodoxlibrary.org</li>
+              <li>Phone: (555) 123-4567</li>
+              <li>Follow us on social media</li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="max-w-7xl mx-auto mt-8 pt-8 border-t border-tertiary/20 text-center text-tertiary/60 text-sm">
+          <p>&copy; {new Date().getFullYear()} Orthodox Library. All rights reserved.</p>
+        </div>
+      </footer>
     </div>
-  );
+  )
+}
+
+// Navigation Link Component
+function NavLink({ href, icon, text }: { href: string; icon: React.ReactNode; text: string }) {
+  return (
+    <Link href={href} className="flex items-center space-x-1 text-gray-600 hover:text-primary transition-colors">
+      {icon}
+      <span>{text}</span>
+    </Link>
+  )
+}
+
+// Feature Card Component
+function FeatureCard({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) {
+  return (
+    <Card className="text-center hover:shadow-md transition-shadow">
+      <CardHeader>
+        <div className="flex justify-center mb-4">
+          {icon}
+        </div>
+        <CardTitle className="text-primary">{title}</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <p className="text-muted-foreground">{description}</p>
+      </CardContent>
+    </Card>
+  )
 }

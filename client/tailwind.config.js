@@ -8,6 +8,9 @@ module.exports = {
   theme: {
   	extend: {
   		colors: {
+  			primary: '#1E3A8A',      // Dark blue
+  			secondary: '#FBBF24',    // Amber/yellow
+  			tertiary: '#FFFFFF',     // White
   			'agt-blue': '#1e3a8a',
   			'agt-yellow': '#fbbf24',
   			'spiritual-cream': '#fdfbf7',
@@ -22,14 +25,16 @@ module.exports = {
   				DEFAULT: 'hsl(var(--popover))',
   				foreground: 'hsl(var(--popover-foreground))'
   			},
-  			primary: {
-  				DEFAULT: 'hsl(var(--primary))',
-  				foreground: 'hsl(var(--primary-foreground))'
-  			},
-  			secondary: {
-  				DEFAULT: 'hsl(var(--secondary))',
-  				foreground: 'hsl(var(--secondary-foreground))'
-  			},
+  			// Note: I've kept your original primary/secondary objects but commented them out
+  			// to avoid conflicts. You can remove them if you don't need the HSL variables.
+  			// primary: {
+  			// 	DEFAULT: 'hsl(var(--primary))',
+  			// 	foreground: 'hsl(var(--primary-foreground))'
+  			// },
+  			// secondary: {
+  			// 	DEFAULT: 'hsl(var(--secondary))',
+  			// 	foreground: 'hsl(var(--secondary-foreground))'
+  			// },
   			muted: {
   				DEFAULT: 'hsl(var(--muted))',
   				foreground: 'hsl(var(--muted-foreground))'
