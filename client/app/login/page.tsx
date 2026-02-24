@@ -1,108 +1,79 @@
 "use client";
-
-import React, { useState } from 'react';
+import React from 'react';
+import { Shield, Mail, Lock, LogIn, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
-import { toast } from 'react-toastify';
 
-export default function LoginPage() {
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-  });
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Logic for authentication goes here
-    toast.info("Attempting to sign in...");
-    console.log("Login credentials:", formData);
-  };
-
+export default function SanctumLogin() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#1e3a8a] relative overflow-hidden">
+    <main className="min-h-screen flex items-center justify-center p-4 text-white relative overflow-hidden bg-[#0a1128]">
+      {/* Vibrant Gradient Background matches the Hackathon sample */}
+      <div className="absolute inset-0 z-0 bg-gradient-to-br from-[#1e3a8a] via-[#1e1b4b] to-[#0a1128]" />
+      
+      {/* Decorative Glow Orbs */}
+      <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-blue-500/20 blur-[130px] rounded-full animate-pulse" />
+      <div className="absolute bottom-1/3 left-1/4 w-96 h-96 bg-indigo-500/20 blur-[130px] rounded-full" />
 
-      {/* Decorative Hackathon-style Shapes (from image 1) */}
-      <div className="absolute top-[-10%] right-[-5%] w-96 h-96 bg-blue-500 rounded-full blur-[100px] opacity-30"></div>
-      <div className="absolute bottom-[-10%] left-[-5%] w-80 h-80 bg-yellow-500 rounded-full blur-[120px] opacity-20"></div>
-
-      <div className="relative z-10 w-full max-w-md px-6">
-
-        {/* Logo/Icon Area */}
+      <div className="w-full max-w-md bg-black/30 border border-white/10 p-10 rounded-[2.5rem] backdrop-blur-xl shadow-2xl z-10 relative">
         <div className="flex flex-col items-center mb-10">
-          <div className="w-20 h-20 bg-[#fbbf24] rounded-2xl rotate-12 flex items-center justify-center shadow-2xl mb-6">
-             <span className="text-4xl -rotate-12">📚</span>
+          <div className="w-20 h-20 bg-[#facc15] rounded-3xl flex items-center justify-center shadow-[0_0_40px_rgba(250,204,21,0.4)] mb-6">
+            <Shield size={40} className="text-black" />
           </div>
-          <h1 className="text-4xl font-black text-white tracking-tight uppercase">
-            Gibi <span className="text-[#fbbf24]">Login</span>
+          <h1 className="text-4xl font-black tracking-tighter uppercase italic text-center">
+            Login <span className="text-[#facc15] font-normal not-italic">Spiritual</span> Library
           </h1>
-          <p className="text-blue-200 mt-2 font-medium">Access the Spiritual Repository</p>
+          <p className="text-blue-200/60 text-[10px] font-bold tracking-[0.3em] mt-4 uppercase">Access Ancient Wisdom</p>
         </div>
 
-        {/* Login Card */}
-        <div className="bg-white rounded-[2.5rem] p-10 shadow-[0_20px_50px_rgba(0,0,0,0.3)]">
-          <form onSubmit={handleSubmit} className="space-y-6">
-
-            {/* Email Field */}
-            <div className="space-y-2">
-              <label className="text-sm font-bold text-[#1e3a8a] ml-1 uppercase tracking-wider">Email Address</label>
-              <input
-                type="email"
-                name="email"
-                required
-                onChange={handleChange}
-                className="w-full bg-gray-50 border-2 border-gray-100 rounded-2xl py-4 px-6 outline-none focus:border-[#fbbf24] focus:bg-white transition-all text-gray-900 placeholder:text-gray-400"
-                placeholder="yourname@gibi.com"
+        <form className="space-y-6">
+          {/* Email Address */}
+          <div className="space-y-2">
+            <label className="text-[11px] font-black uppercase tracking-widest text-blue-200/70 ml-4">Email Address</label>
+            <div className="relative group">
+              <Mail className="absolute left-5 top-1/2 -translate-y-1/2 text-blue-300/40 group-focus-within:text-[#facc15] transition-colors" size={18} />
+              <input 
+                type="email" 
+                placeholder="hs1@gmail.com"
+                className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-14 pr-6 text-sm focus:border-[#facc15] focus:bg-white/10 outline-none transition-all placeholder:text-blue-200/20"
               />
             </div>
-
-            {/* Password Field */}
-            <div className="space-y-2">
-              <div className="flex justify-between items-center px-1">
-                <label className="text-sm font-bold text-[#1e3a8a] uppercase tracking-wider">Password</label>
-                <Link href="#" className="text-xs font-bold text-blue-600 hover:text-[#fbbf24]">Forgot?</Link>
-              </div>
-              <input
-                type="password"
-                name="password"
-                required
-                onChange={handleChange}
-                className="w-full bg-gray-50 border-2 border-gray-100 rounded-2xl py-4 px-6 outline-none focus:border-[#fbbf24] focus:bg-white transition-all text-gray-900 shadow-inner"
-                placeholder="••••••••"
-              />
-            </div>
-
-            {/* Login Button */}
-            <button
-              type="submit"
-              className="w-full bg-[#fbbf24] hover:bg-[#f59e0b] text-[#1e3a8a] font-black py-5 rounded-2xl shadow-lg hover:shadow-yellow-500/20 transform transition-all active:scale-95 flex items-center justify-center gap-3 text-lg"
-            >
-              SIGN IN ➔
-            </button>
-          </form>
-
-          {/* Divider */}
-          <div className="flex items-center my-8">
-            <div className="flex-1 h-[1px] bg-gray-200"></div>
-            <span className="px-4 text-gray-400 text-xs font-bold uppercase tracking-widest">New here?</span>
-            <div className="flex-1 h-[1px] bg-gray-200"></div>
           </div>
 
-          {/* Link to Register */}
-          <Link href="/register">
-            <button className="w-full border-2 border-[#1e3a8a] text-[#1e3a8a] font-bold py-4 rounded-2xl hover:bg-[#1e3a8a] hover:text-white transition-all">
-              CREATE AN ACCOUNT
-            </button>
+          {/* Password - "Forgot Password" removed */}
+          <div className="space-y-2">
+            <label className="text-[11px] font-black uppercase tracking-widest text-blue-200/70 ml-4">Password</label>
+            <div className="relative group">
+              <Lock className="absolute left-5 top-1/2 -translate-y-1/2 text-blue-300/40 group-focus-within:text-[#facc15] transition-colors" size={18} />
+              <input 
+                type="password" 
+                placeholder="••••••••"
+                className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-14 pr-6 text-sm focus:border-[#facc15] focus:bg-white/10 outline-none transition-all placeholder:text-blue-200/20"
+              />
+            </div>
+          </div>
+
+          {/* Bright Yellow Button Style */}
+          <button className="w-full bg-[#facc15] text-black py-5 rounded-2xl font-black text-sm uppercase tracking-[0.2em] flex items-center justify-center gap-3 hover:bg-[#fde047] hover:shadow-[0_0_30px_rgba(250,204,21,0.3)] transition-all mt-8 active:scale-95 shadow-xl shadow-black/20">
+            Initiate Login <LogIn size={20} />
+          </button>
+        </form>
+
+        <div className="mt-10 text-center border-t border-white/5 pt-8">
+          <Link href="/register" className="text-blue-200/40 text-[10px] font-bold uppercase tracking-widest hover:text-[#facc15] transition-colors flex items-center justify-center gap-2 group">
+            Not registered yet? 
+            <span className="text-[#facc15] underline underline-offset-4 group-hover:no-underline">Join Initiate</span>
+            <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
-
-        {/* Simple Footer Text */}
-        <p className="text-center text-blue-200 mt-8 text-sm font-medium">
-          © 2026 Gibi Gubae Spiritual Management System
-        </p>
       </div>
-    </div>
+
+      {/* Futuristic Status Bar */}
+      <div className="fixed bottom-8 flex gap-8 text-[9px] font-black text-blue-200/20 uppercase tracking-[0.4em]">
+        <div className="flex items-center gap-2">
+          <div className="w-1 h-1 bg-green-500 rounded-full animate-ping" />
+          System: Online
+        </div>
+        <span>Vault Node: 0x7E2</span>
+      </div>
+    </main>
   );
 }
