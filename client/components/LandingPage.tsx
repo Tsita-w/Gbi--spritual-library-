@@ -79,7 +79,7 @@ export default function Home() {
                 <p className="text-sm text-gray-400 mt-2">(Replace with your image)</p>
               </div>
             </div>
-            
+
             <Image
               src="/image.png"
               alt="Ancient figure with glowing book"
@@ -87,11 +87,11 @@ export default function Home() {
               className="object-cover"
               priority
             />
-            
+
           </div>
         </div>
 
-        
+
       </section>
 
       {/* Features Section */}
