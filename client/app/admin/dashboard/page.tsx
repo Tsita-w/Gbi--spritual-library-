@@ -1,4 +1,4 @@
-// Using the curly braces matches the 'export function DashboardUI'
+// This curly brace import matches 'export function DashboardUI'
 import { DashboardUI } from "@/components/admin/dashboard/dashboard-ui";
 
 export default function AdminPage() {
@@ -16,10 +16,11 @@ export default function AdminPage() {
           System <span className="text-[#FBBF24]">Dashboard</span>
         </h1>
         <p className="text-[#94A3B8] font-bold text-[10px] tracking-[0.2em] uppercase mt-2">
-          Sanctum Node / Live Metrics
+          Sanctum Node / Performance Metrics
         </p>
       </div>
 
+      {/* Now TypeScript knows 'stats' is allowed and required */}
       <DashboardUI stats={mockStats} />
     </div>
   );

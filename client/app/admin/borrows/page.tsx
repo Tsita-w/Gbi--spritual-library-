@@ -1,5 +1,5 @@
-import { BorrowTable } from "@/components/admin/borrows/borrow-table";
+import BorrowTable from "@/components/admin/borrow-table";
 
-export default function AdminBorrowsPage() {
+export default function Page() {
   return <BorrowTable />;
 }

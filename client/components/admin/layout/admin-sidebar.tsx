@@ -3,20 +3,12 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import {
-  LayoutDashboard,
-  BookOpen,
-  History,
-  Users,
-  LogOut,
-  Settings
-} from 'lucide-react';
-import { cn } from "@/lib/utils";
+import { LayoutDashboard, BookOpen, Repeat, Users, LogOut } from 'lucide-react';
 
-const NAV_ITEMS = [
-  { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
+const navItems = [
+  { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
   { name: 'Manage Books', href: '/admin/books', icon: BookOpen },
-  { name: 'Borrow Records', href: '/admin/borrows', icon: History },
+  { name: 'Borrow Records', href: '/admin/borrows', icon: Repeat },
   { name: 'Students', href: '/admin/students', icon: Users },
 ];
 
@@ -24,49 +16,43 @@ export function AdminSidebar() {
   const pathname = usePathname();
 
   return (
-    <div className="w-64 bg-secondary h-screen flex flex-col text-white shadow-2xl border-r border-white/5">
-      {/* Branding */}
-      <div className="p-8">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-[0_0_20px_rgba(250,204,21,0.3)]">
-            <span className="text-secondary text-2xl font-black italic">S</span>
-          </div>
-          <div>
-            <h1 className="text-xl font-black tracking-tighter uppercase italic">Gibi <span className="text-primary tracking-normal">Admin</span></h1>
-            <p className="text-[8px] text-blue-300 font-black tracking-[0.3em] uppercase opacity-50">Sanctum Node</p>
-          </div>
+    <div className="w-72 bg-[#FBBF24] h-screen p-8 flex flex-col shadow-[4px_0_24px_rgba(0,0,0,0.05)] z-20">
+      {/* Brand Section */}
+      <div className="flex items-center gap-3 mb-12">
+        <div className="bg-[#1E3A8A] w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg">
+          <span className="text-[#FBBF24] font-black text-2xl italic">S</span>
+        </div>
+        <div>
+          <h2 className="text-[#1E3A8A] font-black text-xl italic leading-none">GIBI <span className="block text-xs not-italic tracking-[0.2em] opacity-70">SANCTUM NODE</span></h2>
         </div>
       </div>
 
-      {/* Navigation */}
-      <nav className="flex-1 px-4 space-y-2 mt-4">
-        {NAV_ITEMS.map((item) => {
-          const isActive = pathname === item.href;
+      {/* Navigation Links */}
+      <nav className="flex-1 space-y-3">
+        {navItems.map((item) => {
+          const isActive = pathname.startsWith(item.href);
           return (
             <Link
               key={item.name}
               href={item.href}
-              className={cn(
-                "flex items-center gap-4 px-5 py-4 rounded-2xl font-bold transition-all duration-300 group",
+              className={`flex items-center gap-4 px-6 py-4 rounded-2xl font-black text-xs transition-all duration-300 ${
                 isActive
-                  ? "bg-primary text-secondary shadow-lg shadow-yellow-500/20"
-                  : "text-blue-200/60 hover:bg-white/5 hover:text-white"
-              )}
+                ? 'bg-[#1E3A8A] text-[#FBBF24] shadow-xl translate-x-2'
+                : 'text-[#1E3A8A]/60 hover:bg-[#1E3A8A]/5 hover:text-[#1E3A8A]'
+              }`}
             >
-              <item.icon size={20} className={cn(isActive ? "text-secondary" : "group-hover:text-primary")} />
-              <span className="text-sm tracking-tight">{item.name}</span>
+              <item.icon size={20} />
+              {item.name.toUpperCase()}
             </Link>
           );
         })}
       </nav>
 
-      {/* Footer / Logout */}
-      <div className="p-6 border-t border-white/5">
-        <button className="flex items-center gap-4 px-5 py-4 w-full text-red-400 font-bold hover:bg-red-500/10 rounded-2xl transition-all">
-          <LogOut size={20} />
-          <span className="text-sm">Terminate Session</span>
-        </button>
-      </div>
+      {/* Footer / Terminate Session */}
+      <button className="flex items-center gap-3 px-6 py-4 rounded-2xl font-black text-xs text-[#1E3A8A]/40 hover:text-red-600 transition-all mt-auto group">
+        <LogOut size={20} className="group-hover:-translate-x-1 transition-transform" />
+        TERMINATE SESSION
+      </button>
     </div>
   );
 }

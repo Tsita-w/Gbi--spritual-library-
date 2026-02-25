@@ -1,6 +1,9 @@
-import { BookManager } from "@/components/admin/books/book-manager";
+import BookManager from "@/components/admin/book-manager";
 
-export default function AdminBooksPage() {
-  // Integration point for fetching books from your backend (e.g., Axios/Fetch)
-  return <BookManager />;
+export default function Page() {
+  return (
+    <div className="animate-in fade-in duration-500">
+      <BookManager />
+    </div>
+  );
 }

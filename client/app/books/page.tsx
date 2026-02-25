@@ -1,10 +1,5 @@
-// app/admin/books/page.tsx
-import { BookManager } from "@/components/admin/books/book-manager";
+import Books from "@/components/Books";
 
-export default function BooksPage() {
-  return (
-    <div className="p-6">
-      <BookManager />
-    </div>
-  );
+export default function Page() {
+  return <Books />;
 }
