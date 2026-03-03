@@ -1,9 +1,6 @@
-import LandingPage from "@/components/LandingPage"
-import Books from "@/components/Books"
-import Borrows from "@/components/MyProfile"
-import Chat from "@/components/Chat"
-import MyProfile from "@/components/MyProfile"
+import MyProfile from "@/components/MyProfile";
+import Books from "@/components/Books";
+import SignUp from "@/components/SignUp";
 export default function Home() {
-  return <MyProfile />
-
+  return <SignUp/>
 }

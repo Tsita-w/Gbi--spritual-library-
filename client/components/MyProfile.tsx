@@ -46,7 +46,7 @@ const BOOKS_WITH_NOTES = [
     id: 1,
     title: "The Philokalia", 
     author: "St. Nikodimos of the Holy Mountain",
-    cover: "/books/philokalia.jpg",
+    cover: "/books/philokalia.jpg", // Add your image here
     coverColor: "from-primary/30 to-secondary/20",
     icon: "📖",
     status: "COMPLETED",
@@ -63,7 +63,7 @@ const BOOKS_WITH_NOTES = [
     id: 2,
     title: "The Ladder of Divine Ascent", 
     author: "St. John Climacus",
-    cover: "/books/ladder.jpg",
+    cover: "/books/ladder.jpg", // Add your image here
     coverColor: "from-secondary/30 to-primary/20",
     icon: "🪜",
     status: "READING",
@@ -79,7 +79,7 @@ const BOOKS_WITH_NOTES = [
     id: 3,
     title: "On the Incarnation", 
     author: "St. Athanasius",
-    cover: "/books/incarnation.jpg",
+    cover: "/books/incarnation.jpg", // Add your image here
     coverColor: "from-primary/20 to-tertiary/30",
     icon: "✨",
     status: "COMPLETED",
@@ -97,7 +97,7 @@ const BOOKS_WITH_NOTES = [
     id: 4,
     title: "Way of a Pilgrim", 
     author: "Anonymous",
-    cover: "/books/pilgrim.jpg",
+    cover: "/books/pilgrim.jpg", // Add your image here
     coverColor: "from-secondary/20 to-primary/20",
     icon: "🚶",
     status: "BORROWED",
@@ -110,7 +110,7 @@ const BOOKS_WITH_NOTES = [
     id: 5,
     title: "The Mystical Theology", 
     author: "St. Dionysius",
-    cover: "/books/mystical.jpg",
+    cover: "/books/mystical.jpg", // Add your image here
     coverColor: "from-primary/25 to-secondary/15",
     icon: "🌌",
     status: "COMPLETED",
@@ -174,12 +174,7 @@ export default function ProfilePage() {
             <p className="text-gray-600 mb-6 max-w-2xl">{USER_DATA.bio}</p>
             
             {/* Stats */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-              <StatCard icon={<BookOpen className="h-5 w-5" />} label="Books Read" value={USER_DATA.totalBooksRead} />
-              <StatCard icon={<Clock className="h-5 w-5" />} label="Currently Reading" value={USER_DATA.currentlyReading} />
-              <StatCard icon={<Star className="h-5 w-5" />} label="Favorite" value={USER_DATA.favoriteCategory} />
-              <StatCard icon={<Calendar className="h-5 w-5" />} label="Member Since" value={USER_DATA.memberSince} />
-            </div>
+            
           </div>
         </div>
 

@@ -1,128 +1,174 @@
 "use client";
 
-import React, { useState } from 'react';
-import Link from 'next/link';
-import { toast } from 'react-toastify';
+import React, { useState } from "react";
+import { ArrowRight, Sparkles, Mail, User, Lock, Phone, ChevronLeft } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 export default function RegisterPage() {
-  const [formData, setFormData] = useState({
-    fullName: '',
-    email: '',
-    password: '',
-    phone: ''
-  });
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const router = useRouter();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const validateForm = () => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError("Please enter a valid email address.");
+      return false;
+    }
+    if (fullName.trim().length < 2) {
+      setError("Please enter your full name.");
+      return false;
+    }
+    if (phone.length !== 10) {
+      setError("Phone number must be exactly 10 digits.");
+      return false;
+    }
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters.");
+      return false;
+    }
+    return true;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Logic for registration
-    toast.success("Sequence Initiated! Welcome to Gibi Library.");
-    console.log("Registered User Data:", formData);
+    setError("");
+
+    if (!validateForm()) return;
+
+    try {
+      const res = await fetch("http://localhost:5000/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ fullName, email, phone, password })
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.message || "Registration failed");
+        return;
+      }
+
+      router.push("/login?registered=true");
+    } catch (err) {
+      setError("Server error. Try again later.");
+    }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#050510] text-white px-4 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-white to-secondary/5 flex flex-col justify-center items-center p-6 relative overflow-hidden">
+      
+      {/* Back Button */}
+      <Button 
+        variant="ghost" 
+        onClick={() => router.push("/")}
+        className="absolute top-8 left-8 text-primary/60 hover:text-primary transition-all z-20"
+      >
+        <ChevronLeft size={18} className="mr-2" />
+        Back to Home
+      </Button>
 
-      {/* Background Ambient Glows */}
-      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-900/10 rounded-full blur-[120px]"></div>
-        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-yellow-900/5 rounded-full blur-[100px]"></div>
-      </div>
-
-      <div className="relative z-10 w-full max-w-lg">
-
-        {/* Top Branding Icon */}
-        <div className="flex flex-col items-center mb-8">
-          <div className="w-20 h-20 bg-[#FFD700] rounded-full flex items-center justify-center shadow-[0_0_40px_rgba(255,214,0,0.3)] mb-6">
-            <span className="text-3xl text-black">📖</span>
+      <div className="w-full max-w-[480px] relative z-10">
+        {/* Modern Soft Card */}
+        <div className="bg-white/80 backdrop-blur-2xl rounded-[3rem] shadow-[0_32px_64px_-12px_rgba(0,0,0,0.08)] border border-white p-8 md:p-12 transition-all">
+          
+          {/* Header Section */}
+          <div className="text-center mb-10">
+            
+            <h1 className="text-3xl font-bold text-primary tracking-tight">
+              Create <span className="text-secondary">Account</span>
+            </h1>
+            <p className="text-sm text-muted-foreground mt-2">
+              Join our community of wisdom seekers
+            </p>
           </div>
-          <h1 className="text-4xl font-bold tracking-tight text-center italic">Initiate Sequence</h1>
-          <p className="text-gray-400 mt-2 font-light">Begins your journey into the digital wisdom</p>
-        </div>
 
-        {/* The Dark Glass Card */}
-        <div className="bg-[#0f0f1a]/80 backdrop-blur-2xl border border-white/10 p-8 md:p-10 rounded-[40px] shadow-2xl">
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleRegister} className="space-y-4">
+            {error && (
+              <div className="bg-red-50 text-red-600 text-xs font-semibold p-4 rounded-2xl border border-red-100 animate-in fade-in slide-in-from-top-1">
+                {error}
+              </div>
+            )}
 
-            {/* Full Name */}
-            <div className="space-y-1.5">
-              <label className="text-sm font-medium text-gray-300 ml-1">Full Name</label>
-              <input
-                type="text"
-                name="fullName"
-                required
-                onChange={handleChange}
-                className="w-full bg-[#07070f] border border-gray-800 rounded-2xl py-4 px-5 outline-none focus:border-[#FFD700]/50 focus:ring-1 focus:ring-[#FFD700]/50 transition-all text-gray-200 placeholder:text-gray-700"
-                placeholder="Enter your name"
-              />
-            </div>
-
-            {/* Email / Vessel ID */}
-            <div className="space-y-1.5">
-              <label className="text-sm font-medium text-gray-300 ml-1">Vessel ID (Email)</label>
+            <div className="space-y-3">
+              {/* Full Name */}
               <div className="relative group">
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-[#FFD700] transition-colors">@</span>
-                <input
+                <User className="absolute left-4 top-1/2 -translate-y-1/2 text-primary/30 group-focus-within:text-secondary transition-colors" size={18} />
+                <Input
+                  type="text"
+                  placeholder="Full Name"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  className="h-14 pl-12 rounded-2xl border-transparent bg-primary/5 focus:bg-white focus:border-secondary/30 focus:ring-4 focus:ring-secondary/5 transition-all font-medium"
+                />
+              </div>
+
+              {/* Email */}
+              <div className="relative group">
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-primary/30 group-focus-within:text-secondary transition-colors" size={18} />
+                <Input
                   type="email"
-                  name="email"
-                  required
-                  onChange={handleChange}
-                  className="w-full bg-[#07070f] border border-gray-800 rounded-2xl py-4 pl-12 pr-5 outline-none focus:border-[#FFD700]/50 focus:ring-1 focus:ring-[#FFD700]/50 transition-all text-gray-200 placeholder:text-gray-700"
-                  placeholder="priest@sanctum.io"
+                  placeholder="Email Address"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="h-14 pl-12 rounded-2xl border-transparent bg-primary/5 focus:bg-white focus:border-secondary/30 focus:ring-4 focus:ring-secondary/5 transition-all font-medium"
+                />
+              </div>
+
+              {/* Phone */}
+              <div className="relative group">
+                <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-primary/30 group-focus-within:text-secondary transition-colors" size={18} />
+                <Input
+                  type="tel"
+                  placeholder="Phone (10 digits)"
+                  maxLength={10}
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value.replace(/\D/g, ''))}
+                  className="h-14 pl-12 rounded-2xl border-transparent bg-primary/5 focus:bg-white focus:border-secondary/30 focus:ring-4 focus:ring-secondary/5 transition-all font-medium"
+                />
+              </div>
+
+              {/* Password */}
+              <div className="relative group">
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-primary/30 group-focus-within:text-secondary transition-colors" size={18} />
+                <Input
+                  type="password"
+                  placeholder="Password (Min 6 chars)"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="h-14 pl-12 rounded-2xl border-transparent bg-primary/5 focus:bg-white focus:border-secondary/30 focus:ring-4 focus:ring-secondary/5 transition-all font-medium"
                 />
               </div>
             </div>
 
-            {/* Phone Number */}
-            <div className="space-y-1.5">
-              <label className="text-sm font-medium text-gray-300 ml-1">Communication Link (Phone)</label>
-              <input
-                type="tel"
-                name="phone"
-                required
-                onChange={handleChange}
-                className="w-full bg-[#07070f] border border-gray-800 rounded-2xl py-4 px-5 outline-none focus:border-[#FFD700]/50 focus:ring-1 focus:ring-[#FFD700]/50 transition-all text-gray-200 placeholder:text-gray-700"
-                placeholder="+251 ..."
-              />
-            </div>
-
-            {/* Secret Mantra (Password) */}
-            <div className="space-y-1.5">
-              <label className="text-sm font-medium text-gray-300 ml-1">Secret Mantra (Password)</label>
-              <input
-                type="password"
-                name="password"
-                required
-                onChange={handleChange}
-                className="w-full bg-[#07070f] border border-gray-800 rounded-2xl py-4 px-5 outline-none focus:border-[#FFD700]/50 transition-all placeholder:text-gray-700"
-                placeholder="••••••••"
-              />
-            </div>
-
-            {/* Yellow Action Button */}
-            <button
+            <Button
               type="submit"
-              className="w-full bg-[#FFD700] hover:bg-[#FFC000] text-black font-black py-5 rounded-2xl shadow-[0_10px_20px_rgba(255,214,0,0.15)] flex items-center justify-center gap-3 transition-all active:scale-[0.98] mt-6 text-lg uppercase tracking-wider"
+              className="w-full h-14 bg-primary text-tertiary rounded-2xl font-bold text-sm shadow-xl shadow-primary/20 hover:shadow-2xl hover:shadow-primary/30 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 mt-4"
             >
-              <span>➔</span> INITIATE LOGIN
-            </button>
+              Get Started <ArrowRight size={18} />
+            </Button>
           </form>
-        </div>
 
-        {/* Footer */}
-        <div className="mt-8 flex flex-col items-center gap-4">
-          <p className="text-gray-500 text-sm">
-            Already have an account? <Link href="/login" className="text-white hover:text-[#FFD700] font-semibold">Log In</Link>
-          </p>
-          <div className="flex gap-8 text-[#FFD700]/80 text-xs font-bold tracking-[0.2em]">
-            <Link href="/login" className="hover:text-[#FFD700]">HRFE/LOGIN</Link>
-            <Link href="/login" className="hover:text-[#FFD700]">LOG IN</Link>
+          {/* Footer Link */}
+          <div className="mt-8 text-center text-sm font-medium text-primary/60">
+            Already have an account?{" "}
+            <Link href="/login" className="text-secondary hover:text-secondary/80 border-b-2 border-secondary/20 pb-0.5 transition-all">
+              Sign In
+            </Link>
           </div>
         </div>
       </div>
+
+      {/* Decorative background blurs */}
+      <div className="fixed -z-10 top-[-10%] right-[-10%] w-[500px] h-[500px] bg-secondary/10 rounded-full blur-[120px] animate-pulse"></div>
+      <div className="fixed -z-10 bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px]"></div>
     </div>
   );
 }

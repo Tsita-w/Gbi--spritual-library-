@@ -5,80 +5,57 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import Image from "next/image";
 import { 
   Search, 
   BookOpen, 
-  Grid3x3
+  Grid3x3,
+  ChevronDown,
+  Download,
+  Eye,
+  BookmarkPlus,
+  LayoutList
 } from 'lucide-react';
 
-// Mock Data with image paths (place these images in your public folder)
 const BOOKS_DATA = [
   { 
     id: 1, 
     title: "The Path to Peace", 
     author: "Dr. Samuel K. Brown", 
-    price: "50 Birr", 
     status: "AVAILABLE", 
     category: "Prayer", 
     tag: "PRAYER", 
-    cover: "from-primary/20 to-secondary/20",
-    image: "/books/path-to-peace.jpg" // Add your image path here
+    cover: "from-primary/10 to-primary/5",
+    image: "/books/path-to-peace.jpg",
+    format: "pdf"
   },
   { 
     id: 2, 
     title: "Ancient Wisdom", 
     author: "Elena G. White", 
-    price: "50 Birr", 
     status: "AVAILABLE", 
     category: "Faith", 
     tag: "FAITH", 
-    cover: "from-secondary/20 to-primary/20",
-    image: "/books/ancient-wisdom.jpg"
+    cover: "from-primary/10 to-primary/5",
+    image: "/books/ancient-wisdom.jpg",
+    format: "pdf"
   },
   { 
     id: 3, 
     title: "The Pure Heart", 
     author: "Pastor John Mark", 
-    price: "50 Birr", 
     status: "RESERVED", 
     category: "Holiness", 
     tag: "HOLINESS", 
-    cover: "from-primary/30 to-tertiary/10",
-    image: "/books/pure-heart.jpg"
-  },
-  { 
-    id: 4, 
-    title: "Church History", 
-    author: "Abba Melketsedek", 
-    price: "70 Birr", 
-    status: "AVAILABLE", 
-    category: "History", 
-    tag: "HISTORY", 
-    cover: "from-secondary/20 to-tertiary/20",
-    image: "/books/church-history.jpg"
-  },
-  { 
-    id: 5, 
-    title: "The Ladder of Divine Ascent", 
-    author: "St. John Climacus", 
-    price: "65 Birr", 
-    status: "AVAILABLE", 
-    category: "Prayer", 
-    tag: "PRAYER", 
-    cover: "from-primary/25 to-secondary/15",
-    image: "/books/ladder-divine-ascent.jpg"
-  },
-  { 
-    id: 6, 
-    title: "On the Incarnation", 
-    author: "St. Athanasius", 
-    price: "55 Birr", 
-    status: "RESERVED", 
-    category: "Faith", 
-    tag: "FAITH", 
-    cover: "from-secondary/25 to-primary/15",
-    image: "/books/on-incarnation.jpg"
+    cover: "from-primary/10 to-primary/5",
+    image: "/books/pure-heart.jpg",
+    format: "physical"
   },
 ];
 
@@ -90,7 +67,6 @@ export default function BrowseBooks() {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [imageErrors, setImageErrors] = useState<Record<number, boolean>>({});
 
-  // Filtering Logic
   const filteredBooks = BOOKS_DATA.filter(book => {
     const matchesCategory = activeCategory === "All" || book.category === activeCategory;
     const matchesSearch = book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -98,217 +74,145 @@ export default function BrowseBooks() {
     return matchesCategory && matchesSearch;
   });
 
-  // Handle image error
-  const handleImageError = (bookId: number) => {
-    setImageErrors(prev => ({ ...prev, [bookId]: true }));
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-b from-spiritual-cream to-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="min-h-screen bg-[#FAFBFF]"> {/* Softy background */}
+      <div className="max-w-7xl mx-auto px-6 py-12">
         
-        {/* Header with Title */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-          <div>
-            <h1 className="text-4xl md:text-5xl font-bold text-primary">
-              Browse <span className="text-secondary">Books</span>
+        {/* Header */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+          <div className="space-y-2">
+            <h1 className="text-4xl font-bold tracking-tight text-primary">
+              Browse <span className="text-primary">Library</span>
             </h1>
-            <p className="text-gray-600 mt-2">
-              Explore our collection of sacred texts and spiritual wisdom.
+            <p className="text-slate-500 max-w-md">
+              Discover spiritual growth through our curated collection of digital and physical books.
             </p>
           </div>
           
-          {/* View Toggle */}
-          <div className="flex items-center gap-2 bg-white rounded-lg p-1 shadow-sm border">
-            <Button
-              variant={viewMode === "grid" ? "secondary" : "ghost"}
-              size="sm"
+          {/* Modern View Toggle */}
+          <div className="flex items-center p-1 bg-slate-100 rounded-xl border border-slate-200">
+            <button
               onClick={() => setViewMode("grid")}
-              className="gap-2"
+              className={`p-2 rounded-lg transition-all ${viewMode === "grid" ? "bg-white shadow-sm text-primary" : "text-slate-400 hover:text-slate-600"}`}
             >
-              <Grid3x3 className="h-4 w-4" />
-              Grid
-            </Button>
-            <Button
-              variant={viewMode === "list" ? "secondary" : "ghost"}
-              size="sm"
+              <Grid3x3 className="h-5 w-5" />
+            </button>
+            <button
               onClick={() => setViewMode("list")}
-              className="gap-2"
+              className={`p-2 rounded-lg transition-all ${viewMode === "list" ? "bg-white shadow-sm text-primary" : "text-slate-400 hover:text-slate-600"}`}
             >
-              <BookOpen className="h-4 w-4" />
-              List
-            </Button>
+              <LayoutList className="h-5 w-5" />
+            </button>
           </div>
         </div>
 
-        {/* Search and Filter Section */}
-        <div className="bg-white rounded-2xl shadow-lg p-6 mb-8 border">
-          <div className="flex flex-col md:flex-row gap-4">
-            {/* Search Input */}
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-              <Input
-                placeholder="Search by title, author, or topic..."
-                className="pl-10 py-6 text-base"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </div>
-            
-            {/* Category Filters */}
-            <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
-              {CATEGORIES.map((cat) => (
-                <Button
-                  key={cat}
-                  variant={activeCategory === cat ? "secondary" : "outline"}
-                  onClick={() => setActiveCategory(cat)}
-                  className="whitespace-nowrap"
-                >
-                  {cat}
-                </Button>
-              ))}
-            </div>
+        {/* Search & Categories */}
+        <div className="flex flex-col gap-6 mb-10">
+          <div className="relative group">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 group-focus-within:text-primary transition-colors" />
+            <Input
+              placeholder="Search by title, author, or topic..."
+              className="pl-12 py-7 text-lg rounded-2xl border-slate-200 bg-white shadow-sm focus-visible:ring-primary/20 transition-all"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+          
+          <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
+            {CATEGORIES.map((cat) => (
+              <Button
+                key={cat}
+                variant="ghost"
+                onClick={() => setActiveCategory(cat)}
+                className={`rounded-full px-6 transition-all ${
+                  activeCategory === cat 
+                  ? "bg-primary text-white hover:bg-primary/90 shadow-md shadow-primary/20" 
+                  : "bg-white text-slate-600 border border-slate-200 hover:border-primary/30"
+                }`}
+              >
+                {cat}
+              </Button>
+            ))}
           </div>
         </div>
 
-        {/* Books Grid/List View */}
-        <div className={
-          viewMode === "grid" 
-            ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" 
-            : "space-y-4"
-        }>
-          {filteredBooks.length > 0 ? (
-            filteredBooks.map((book) => (
-              viewMode === "grid" ? (
-                // Grid View Card with Image
-                <Card key={book.id} className="group hover:shadow-xl transition-all duration-300 overflow-hidden border-2 hover:border-secondary/20">
-                  <div className={`relative h-48 bg-gradient-to-br ${book.cover}`}>
-                    {!imageErrors[book.id] ? (
-                      <Image
-                        src={book.image}
-                        alt={book.title}
-                        fill
-                        className="object-cover group-hover:scale-110 transition-transform duration-500"
-                        onError={() => handleImageError(book.id)}
-                      />
-                    ) : (
-                      // Fallback if image fails to load
-                      <div className="absolute inset-0 flex items-center justify-center bg-primary/10">
-                        <BookOpen className="h-12 w-12 text-primary/40" />
-                      </div>
-                    )}
-                    
-                    {/* Badges */}
-                    <Badge 
-                      className={`absolute top-4 right-4 ${
-                        book.status === 'AVAILABLE' 
-                          ? 'bg-green-500 text-white' 
-                          : 'bg-gray-500 text-white'
-                      }`}
-                    >
-                      {book.status}
-                    </Badge>
-                    <Badge 
-                      variant="secondary"
-                      className="absolute top-4 left-4 bg-white/90 text-primary"
-                    >
-                      {book.tag}
-                    </Badge>
-                  </div>
-                  
-                  <CardContent className="p-6">
-                    <h3 className="text-xl font-bold text-primary mb-2">{book.title}</h3>
-                    <p className="text-gray-600 text-sm mb-3">by {book.author}</p>
-                    
-                    <div className="flex items-center justify-between mb-4">
-                      <span className="text-2xl font-bold text-secondary">{book.price}</span>
-                    </div>
-                    
-                    <Button className="w-full bg-primary text-tertiary hover:bg-secondary hover:text-primary transition-all duration-300">
-                      View Details
-                    </Button>
-                  </CardContent>
-                </Card>
-              ) : (
-                // List View Card with Image
-                <Card key={book.id} className="group hover:shadow-md transition-all duration-300">
-                  <CardContent className="p-6">
-                    <div className="flex items-start gap-6">
-                      {/* Image for list view */}
-                      <div className="relative w-20 h-20 rounded-xl overflow-hidden flex-shrink-0 bg-gradient-to-br ${book.cover}">
-                        {!imageErrors[book.id] ? (
-                          <Image
-                            src={book.image}
-                            alt={book.title}
-                            fill
-                            className="object-cover"
-                            onError={() => handleImageError(book.id)}
-                          />
-                        ) : (
-                          <div className="absolute inset-0 flex items-center justify-center bg-primary/10">
-                            <BookOpen className="h-8 w-8 text-primary/40" />
-                          </div>
-                        )}
-                      </div>
-                      
-                      <div className="flex-1">
-                        <div className="flex items-start justify-between mb-2">
-                          <div>
-                            <h3 className="text-xl font-bold text-primary">{book.title}</h3>
-                            <p className="text-gray-600">by {book.author}</p>
-                          </div>
-                          <Badge 
-                            className={
-                              book.status === 'AVAILABLE' 
-                                ? 'bg-green-500 text-white' 
-                                : 'bg-gray-500 text-white'
-                            }
-                          >
-                            {book.status}
-                          </Badge>
-                        </div>
-                        
-                        <div className="flex items-center gap-4 mt-4">
-                          <Badge variant="outline" className="border-secondary text-secondary">
-                            {book.tag}
-                          </Badge>
-                          <span className="text-2xl font-bold text-secondary">{book.price}</span>
-                          <Button className="ml-auto bg-primary text-tertiary hover:bg-secondary hover:text-primary">
-                            View
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              )
-            ))
-          ) : (
-            <div className="col-span-full text-center py-20">
-              <div className="bg-white rounded-2xl shadow-lg p-12">
-                <BookOpen className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-                <p className="text-gray-500 text-lg">No sacred texts found matching your criteria.</p>
-                <Button 
-                  variant="link" 
-                  onClick={() => {
-                    setSearchQuery("");
-                    setActiveCategory("All");
-                  }}
-                  className="text-secondary mt-4"
-                >
-                  Clear filters
-                </Button>
+        {/* Books Display */}
+        <div className={viewMode === "grid" ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8" : "space-y-4"}>
+          {filteredBooks.map((book) => (
+            <Card key={book.id} className={`group border-none shadow-sm hover:shadow-xl transition-all duration-500 rounded-3xl overflow-hidden bg-white ${viewMode === 'list' ? 'flex flex-row h-40' : ''}`}>
+              
+              {/* Image Section */}
+              <div className={`relative overflow-hidden ${viewMode === 'grid' ? 'h-64' : 'w-48 h-full'} bg-gradient-to-br ${book.cover}`}>
+                {!imageErrors[book.id] ? (
+                  <Image
+                    src={book.image} alt={book.title} fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-700"
+                    onError={() => setImageErrors(p => ({ ...p, [book.id]: true }))}
+                  />
+                ) : (
+                  <div className="absolute inset-0 flex items-center justify-center"><BookOpen className="h-10 w-10 text-primary/20" /></div>
+                )}
+                <Badge className="absolute top-4 left-4 bg-white/80 backdrop-blur-md text-slate-900 border-none font-medium shadow-sm">
+                  {book.format === 'pdf' ? '📱 Digital' : '📚 Physical'}
+                </Badge>
               </div>
-            </div>
-          )}
-        </div>
 
-        {/* Results Count */}
-        {filteredBooks.length > 0 && (
-          <div className="mt-8 text-center text-gray-500">
-            Showing {filteredBooks.length} of {BOOKS_DATA.length} books
-          </div>
-        )}
+              {/* Content Section */}
+              <CardContent className={`p-6 flex flex-col justify-between ${viewMode === 'list' ? 'flex-1' : ''}`}>
+                <div>
+                  <div className="flex justify-between items-start mb-2">
+                    <h3 className="text-xl font-bold text-slate-900 leading-tight group-hover:text-primary transition-colors">{book.title}</h3>
+                  </div>
+                  <p className="text-slate-500 text-sm mb-4 italic">by {book.author}</p>
+                  <div className="flex items-center gap-2 mb-6">
+                    <span className="text-slate-300">•</span>
+                    <span className={`text-xs font-semibold ${book.status === 'AVAILABLE' ? 'text-emerald-600' : 'text-slate-400'}`}>
+                      {book.status}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Modern View Details Button with Dropdown */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button className="w-full rounded-xl bg-slate-50 text-slate-900 border border-slate-200 hover:bg-primary hover:text-white hover:border-primary transition-all duration-300 group/btn py-6 shadow-none">
+                      <span className="font-semibold">View Details</span>
+                      <ChevronDown className="ml-2 h-4 w-4 opacity-50 group-hover/btn:rotate-180 transition-transform" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-[calc(100%-48px)] sm:w-64 rounded-2xl p-2 shadow-2xl border-slate-100 animate-in fade-in slide-in-from-top-2">
+                    {book.format === 'pdf' ? (
+                      <>
+                        <DropdownMenuItem className="flex items-center gap-3 p-3 rounded-xl cursor-pointer hover:bg-primary/5 focus:bg-primary/5 focus:text-primary transition-colors">
+                          <div className="p-2 bg-primary/10 rounded-lg"><Eye className="h-4 w-4 text-primary" /></div>
+                          <div className="flex flex-col">
+                            <span className="font-medium text-sm">Read Online</span>
+                            <span className="text-[10px] text-slate-400">Instant access in browser</span>
+                          </div>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem className="flex items-center gap-3 p-3 rounded-xl cursor-pointer hover:bg-primary/5 focus:bg-primary/5 focus:text-primary transition-colors">
+                          <div className="p-2 bg-primary/10 rounded-lg"><Download className="h-4 w-4 text-primary" /></div>
+                          <div className="flex flex-col">
+                            <span className="font-medium text-sm">Download PDF</span>
+                            <span className="text-[10px] text-slate-400">Keep for offline reading</span>
+                          </div>
+                        </DropdownMenuItem>
+                      </>
+                    ) : (
+                      <DropdownMenuItem className="flex items-center gap-3 p-3 rounded-xl cursor-pointer hover:bg-primary/5 focus:bg-primary/5 focus:text-primary transition-colors">
+                        <div className="p-2 bg-primary/10 rounded-lg"><BookmarkPlus className="h-4 w-4 text-primary" /></div>
+                        <div className="flex flex-col">
+                          <span className="font-medium text-sm">Request Borrow</span>
+                          <span className="text-[10px] text-slate-400">Reserve physical copy</span>
+                        </div>
+                      </DropdownMenuItem>
+                    )}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </div>
     </div>
   );

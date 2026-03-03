@@ -1,8 +1,7 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
@@ -37,6 +36,7 @@ interface Chat {
 
 export default function ChatPage() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const idCounterRef = useRef(3);
   const [chats, setChats] = useState<Chat[]>([
     {
       id: '1',
@@ -75,79 +75,129 @@ export default function ChatPage() {
   const [activeChat, setActiveChat] = useState<string>('1');
   const [inputMessage, setInputMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const getNextId = () => {
+    idCounterRef.current += 1;
+    return idCounterRef.current.toString();
+  };
 
   const currentChat = chats.find(chat => chat.id === activeChat);
 
   const handleSendMessage = async () => {
     if (!inputMessage.trim() || !activeChat) return;
+    
+    setError(null); // Clear any previous errors
 
-    // Add user message
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      content: inputMessage,
-      role: 'user',
-      timestamp: new Date()
+    // Optimistically add user message to UI
+    const userMsg: Message = { 
+      id: Date.now().toString(), 
+      content: inputMessage, 
+      role: 'user', 
+      timestamp: new Date() 
     };
-
-    setChats(prevChats => 
-      prevChats.map(chat => 
-        chat.id === activeChat 
-          ? { ...chat, messages: [...chat.messages, userMessage] }
-          : chat
-      )
-    );
+    
+    setChats(prev => prev.map(c => 
+      c.id === activeChat 
+        ? { ...c, messages: [...c.messages, userMsg] } 
+        : c
+    ));
     
     setInputMessage('');
     setIsTyping(true);
 
-    // Simulate AI response (replace with actual API call)
-    setTimeout(() => {
-      const assistantMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        content: getAIResponse(inputMessage),
-        role: 'assistant',
-        timestamp: new Date()
-      };
-
-      setChats(prevChats => 
-        prevChats.map(chat => 
-          chat.id === activeChat 
-            ? { ...chat, messages: [...chat.messages, assistantMessage] }
-            : chat
-        )
-      );
+    try {
+      const res = await fetch('http://localhost:5000/api/chat/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          chatId: activeChat, 
+          message: inputMessage 
+        })
+      });
       
+      if (!res.ok) {
+        throw new Error(`Error: ${res.status}`);
+      }
+      
+      const data = await res.json();
+      
+      // Update chat with real AI response from backend
+      setChats(prev => prev.map(c => 
+        c.id === activeChat ? { ...c, messages: data.chat.messages } : c
+      ));
+      
+    } catch (error) {
+      console.error("Failed to reach Orthodox AI Assistant:", error);
+      setError("Failed to connect to the Orthodox AI Assistant. Please try again.");
+      
+      // Optionally remove the optimistically added user message on error
+      setChats(prev => prev.map(c => 
+        c.id === activeChat 
+          ? { ...c, messages: c.messages.filter(msg => msg.id !== userMsg.id) } 
+          : c
+      ));
+      
+    } finally {
       setIsTyping(false);
-    }, 1500);
+    }
   };
 
-  // Mock AI response - replace with actual AI integration
-  const getAIResponse = (message: string) => {
-    const responses = [
-      "That's an excellent question about Orthodox theology. The Church Fathers teach us...",
-      "According to Scripture and Tradition, we understand that...",
-      "The liturgical life of the Church reveals that...",
-      "As St. John Chrysostom once said...",
-      "In the wisdom of the Desert Fathers, we find..."
-    ];
-    return responses[Math.floor(Math.random() * responses.length)];
+  const createNewChat = async () => {
+    try {
+      const res = await fetch('http://localhost:5000/api/chat/new', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          title: 'New Conversation' 
+        })
+      });
+      
+      if (!res.ok) {
+        throw new Error(`Error: ${res.status}`);
+      }
+      
+      const data = await res.json();
+      
+      const newChat: Chat = {
+        id: data.chatId || getNextId(),
+        title: 'New Conversation',
+        messages: [],
+        createdAt: new Date()
+      };
+      
+      setChats(prev => [newChat, ...prev]);
+      setActiveChat(newChat.id);
+      setError(null);
+      
+    } catch (error) {
+      console.error("Failed to create new chat:", error);
+      setError("Failed to create new chat. Please try again.");
+    }
   };
 
-  const createNewChat = () => {
-    const newChat: Chat = {
-      id: Date.now().toString(),
-      title: 'New Conversation',
-      messages: [],
-      createdAt: new Date()
-    };
-    setChats(prev => [newChat, ...prev]);
-    setActiveChat(newChat.id);
-  };
-
-  const deleteChat = (chatId: string) => {
-    setChats(prev => prev.filter(chat => chat.id !== chatId));
-    if (activeChat === chatId && chats.length > 1) {
-      setActiveChat(chats[0].id);
+  const deleteChat = async (chatId: string) => {
+    try {
+      const res = await fetch(`http://localhost:5000/api/chat/${chatId}`, {
+        method: 'DELETE',
+      });
+      
+      if (!res.ok) {
+        throw new Error(`Error: ${res.status}`);
+      }
+      
+      setChats(prev => prev.filter(chat => chat.id !== chatId));
+      
+      if (activeChat === chatId && chats.length > 1) {
+        const remainingChats = chats.filter(chat => chat.id !== chatId);
+        setActiveChat(remainingChats[0].id);
+      }
+      
+      setError(null);
+      
+    } catch (error) {
+      console.error("Failed to delete chat:", error);
+      setError("Failed to delete chat. Please try again.");
     }
   };
 
@@ -273,6 +323,7 @@ export default function ChatPage() {
 
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-1 text-sm text-gray-500">
+              <Sparkles className="h-4 w-4 text-secondary" />
               <span>Orthodox AI Assistant</span>
             </div>
           </div>
@@ -281,6 +332,13 @@ export default function ChatPage() {
         {/* Messages Area */}
         <ScrollArea className="flex-1 p-6">
           <div className="max-w-3xl mx-auto space-y-6">
+            {/* Error Message */}
+            {error && (
+              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+                {error}
+              </div>
+            )}
+
             {currentChat?.messages.map((message) => (
               <div
                 key={message.id}
@@ -314,7 +372,7 @@ export default function ChatPage() {
                       <p className="text-sm whitespace-pre-wrap">{message.content}</p>
                     </div>
                     <p className="text-xs text-gray-400 mt-1 px-2">
-                      {formatTimestamp(message.timestamp)}
+                      {formatTimestamp(new Date(message.timestamp))}
                     </p>
                   </div>
                 </div>
@@ -346,18 +404,23 @@ export default function ChatPage() {
           <div className="max-w-3xl mx-auto">
             <div className="flex gap-3 items-end">
               <div className="flex-1 relative">
-                <Input
+                <textarea
                   placeholder="Ask about Orthodox theology, Scripture, or spiritual life..."
                   value={inputMessage}
                   onChange={(e) => setInputMessage(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && !e.shiftKey && handleSendMessage()}
-                  className="pr-12 py-6 text-base rounded-2xl border-2 focus:border-secondary transition-all"
-                  multiline
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                      e.preventDefault();
+                      void handleSendMessage();
+                    }
+                  }}
+                  className="w-full pr-12 py-4 text-base rounded-2xl border-2 focus:border-secondary transition-all resize-none min-h-14"
                   rows={1}
+                  disabled={isTyping}
                 />
                 <Button
                   size="icon"
-                  className="absolute right-2 bottom-2 bg-primary text-tertiary hover:bg-secondary hover:text-primary transition-colors"
+                  className="absolute right-2 bottom-2 bg-primary text-tertiary hover:bg-secondary hover:text-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   onClick={handleSendMessage}
                   disabled={!inputMessage.trim() || isTyping}
                 >
@@ -368,16 +431,40 @@ export default function ChatPage() {
 
             {/* Quick Suggestions */}
             <div className="flex gap-2 mt-4 overflow-x-auto pb-2">
-              <Button variant="outline" size="sm" className="rounded-full border-secondary/30 text-secondary hover:bg-secondary/10">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="rounded-full border-secondary/30 text-secondary hover:bg-secondary/10 whitespace-nowrap"
+                onClick={() => setInputMessage("What is Theosis?")}
+                disabled={isTyping}
+              >
                 What is Theosis?
               </Button>
-              <Button variant="outline" size="sm" className="rounded-full border-secondary/30 text-secondary hover:bg-secondary/10">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="rounded-full border-secondary/30 text-secondary hover:bg-secondary/10 whitespace-nowrap"
+                onClick={() => setInputMessage("Explain the Jesus Prayer")}
+                disabled={isTyping}
+              >
                 Explain Jesus Prayer
               </Button>
-              <Button variant="outline" size="sm" className="rounded-full border-secondary/30 text-secondary hover:bg-secondary/10">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="rounded-full border-secondary/30 text-secondary hover:bg-secondary/10 whitespace-nowrap"
+                onClick={() => setInputMessage("Who are the Church Fathers?")}
+                disabled={isTyping}
+              >
                 Church Fathers
               </Button>
-              <Button variant="outline" size="sm" className="rounded-full border-secondary/30 text-secondary hover:bg-secondary/10">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="rounded-full border-secondary/30 text-secondary hover:bg-secondary/10 whitespace-nowrap"
+                onClick={() => setInputMessage("What is the meaning of liturgy?")}
+                disabled={isTyping}
+              >
                 Liturgy meaning
               </Button>
             </div>

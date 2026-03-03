@@ -1,107 +1,133 @@
 "use client";
 
-import React, { useState } from 'react';
-import Link from 'next/link';
-import { toast } from 'react-toastify';
+import React, { useState } from "react";
+import { Mail, Lock, ArrowRight, LogIn, ChevronLeft } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
 
 export default function LoginPage() {
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-  });
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const router = useRouter();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Logic for authentication goes here
-    toast.info("Attempting to sign in...");
-    console.log("Login credentials:", formData);
+    setError("");
+
+    try {
+      const res = await fetch("http://localhost:5000/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.message || "Invalid credentials");
+        return;
+      }
+
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+      
+      router.push("/"); // Redirect to home after success
+    } catch (err) {
+      setError("Unable to connect to server.");
+    }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#1e3a8a] relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-white to-secondary/5 flex flex-col justify-center items-center p-6">
+      
+      {/* Back to Home Button */}
+      <Button 
+        variant="ghost" 
+        onClick={() => router.push("/")}
+        className="absolute top-8 left-8 text-primary/60 hover:text-primary transition-all"
+      >
+        <ChevronLeft size={18} className="mr-2" />
+        Back to Home
+      </Button>
 
-      {/* Decorative Hackathon-style Shapes (from image 1) */}
-      <div className="absolute top-[-10%] right-[-5%] w-96 h-96 bg-blue-500 rounded-full blur-[100px] opacity-30"></div>
-      <div className="absolute bottom-[-10%] left-[-5%] w-80 h-80 bg-yellow-500 rounded-full blur-[120px] opacity-20"></div>
-
-      <div className="relative z-10 w-full max-w-md px-6">
-
-        {/* Logo/Icon Area */}
-        <div className="flex flex-col items-center mb-10">
-          <div className="w-20 h-20 bg-[#fbbf24] rounded-2xl rotate-12 flex items-center justify-center shadow-2xl mb-6">
-             <span className="text-4xl -rotate-12">📚</span>
+      <div className="w-full max-w-[440px]">
+        {/* Soft UI Card */}
+        <div className="bg-white/70 backdrop-blur-2xl rounded-[3rem] shadow-[0_32px_64px_-12px_rgba(0,0,0,0.08)] border border-white p-8 md:p-12 transition-all">
+          
+          {/* Header */}
+          <div className="text-center mb-10">
+            
+            <h1 className="text-3xl font-bold text-primary tracking-tight">
+              Welcome <span className="text-secondary">Back</span>
+            </h1>
+            <p className="text-sm text-muted-foreground mt-2">
+              Enter your details to access your library
+            </p>
           </div>
-          <h1 className="text-4xl font-black text-white tracking-tight uppercase">
-            Gibi <span className="text-[#fbbf24]">Login</span>
-          </h1>
-          <p className="text-blue-200 mt-2 font-medium">Access the Spiritual Repository</p>
-        </div>
 
-        {/* Login Card */}
-        <div className="bg-white rounded-[2.5rem] p-10 shadow-[0_20px_50px_rgba(0,0,0,0.3)]">
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleLogin} className="space-y-5">
+            {error && (
+              <div className="bg-red-50 text-red-600 text-xs font-semibold p-4 rounded-2xl border border-red-100 animate-in fade-in zoom-in-95">
+                {error}
+              </div>
+            )}
 
-            {/* Email Field */}
-            <div className="space-y-2">
-              <label className="text-sm font-bold text-[#1e3a8a] ml-1 uppercase tracking-wider">Email Address</label>
+            {/* Email Input */}
+            <div className="relative group">
+              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-primary/40 group-focus-within:text-primary transition-colors" size={18} />
               <input
                 type="email"
-                name="email"
+                placeholder="Email Address"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 required
-                onChange={handleChange}
-                className="w-full bg-gray-50 border-2 border-gray-100 rounded-2xl py-4 px-6 outline-none focus:border-[#fbbf24] focus:bg-white transition-all text-gray-900 placeholder:text-gray-400"
-                placeholder="yourname@gibi.com"
+                className="w-full bg-primary/5 border border-transparent rounded-2xl py-4 pl-12 pr-4 text-sm font-medium text-primary placeholder:text-primary/30 focus:bg-white focus:border-secondary/30 focus:ring-4 focus:ring-secondary/5 outline-none transition-all"
               />
             </div>
 
-            {/* Password Field */}
-            <div className="space-y-2">
-              <div className="flex justify-between items-center px-1">
-                <label className="text-sm font-bold text-[#1e3a8a] uppercase tracking-wider">Password</label>
-                <Link href="#" className="text-xs font-bold text-blue-600 hover:text-[#fbbf24]">Forgot?</Link>
-              </div>
+            {/* Password Input */}
+            <div className="relative group">
+              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-primary/40 group-focus-within:text-primary transition-colors" size={18} />
               <input
                 type="password"
-                name="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 required
-                onChange={handleChange}
-                className="w-full bg-gray-50 border-2 border-gray-100 rounded-2xl py-4 px-6 outline-none focus:border-[#fbbf24] focus:bg-white transition-all text-gray-900 shadow-inner"
-                placeholder="••••••••"
+                className="w-full bg-primary/5 border border-transparent rounded-2xl py-4 pl-12 pr-4 text-sm font-medium text-primary placeholder:text-primary/30 focus:bg-white focus:border-secondary/30 focus:ring-4 focus:ring-secondary/5 outline-none transition-all"
               />
             </div>
 
-            {/* Login Button */}
-            <button
+            {/* Forgot Password */}
+            <div className="text-right">
+              <Link href="#" className="text-xs font-semibold text-primary/50 hover:text-secondary transition-colors">
+                Forgot Password?
+              </Link>
+            </div>
+
+            {/* Sign In Button */}
+            <Button
               type="submit"
-              className="w-full bg-[#fbbf24] hover:bg-[#f59e0b] text-[#1e3a8a] font-black py-5 rounded-2xl shadow-lg hover:shadow-yellow-500/20 transform transition-all active:scale-95 flex items-center justify-center gap-3 text-lg"
+              className="w-full bg-primary text-primary-foreground py-7 rounded-2xl font-bold text-sm shadow-xl shadow-primary/20 hover:shadow-2xl hover:shadow-primary/30 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2"
             >
-              SIGN IN ➔
-            </button>
+              Sign In <ArrowRight size={18} />
+            </Button>
           </form>
 
-          {/* Divider */}
-          <div className="flex items-center my-8">
-            <div className="flex-1 h-[1px] bg-gray-200"></div>
-            <span className="px-4 text-gray-400 text-xs font-bold uppercase tracking-widest">New here?</span>
-            <div className="flex-1 h-[1px] bg-gray-200"></div>
+          {/* Footer Link */}
+          <div className="mt-8 text-center text-sm font-medium text-primary/60">
+            Don't have an account?{" "}
+            <Link href="/register" className="text-secondary hover:text-secondary/80 border-b-2 border-secondary/20 pb-0.5 transition-all">
+              Create Account
+            </Link>
           </div>
-
-          {/* Link to Register */}
-          <Link href="/register">
-            <button className="w-full border-2 border-[#1e3a8a] text-[#1e3a8a] font-bold py-4 rounded-2xl hover:bg-[#1e3a8a] hover:text-white transition-all">
-              CREATE AN ACCOUNT
-            </button>
-          </Link>
         </div>
 
-        {/* Simple Footer Text */}
-        <p className="text-center text-blue-200 mt-8 text-sm font-medium">
-          © 2026 Gibi Gubae Spiritual Management System
-        </p>
+        {/* Decorative background blur */}
+        <div className="fixed -z-10 top-1/4 -left-20 w-72 h-72 bg-secondary/10 rounded-full blur-[120px]"></div>
+        <div className="fixed -z-10 bottom-1/4 -right-20 w-72 h-72 bg-primary/10 rounded-full blur-[120px]"></div>
       </div>
     </div>
   );
